@@ -18,16 +18,28 @@ async def ping(ctx):
 
 # Spam cannons
 
-# Stores author of last message sent at all times
-lastmessageauthor = ""
+# Handles stopping of the spam cannons
+beingspammed = ""
+keepspamming = True
 @client.event
 async def on_message(message):
-    global lastmessageauthor
-    lastmessageauthor = message.author
+    if message.author == client.user:
+        return
+    if message.author.bot:
+        return
+    lastmessageauthor = message.author.mention
+    lastmessageauthor = lastmessageauthor.replace('!', '')
+
+    if lastmessageauthor == beingspammed:
+        global keepspamming
+        keepspamming = False
+
     await client.process_commands(message)
 
 @client.command()
 async def cannon(message, user, frequency: typing.Optional[int] = 100):
+    # I have to do this because discord api sux
+    user = user.replace('!', '')
     # embeds
     embed = discord.Embed(
         color=discord.Color.red()
@@ -38,6 +50,12 @@ async def cannon(message, user, frequency: typing.Optional[int] = 100):
         color=discord.Color.green()
     )
     cancelembed.add_field(name="SPAM CANNONS", value="Spamming cancelled")
+    print(user)
+
+    # give user being spammed to stop spamming function
+    global keepspamming, beingspammed
+    keepspamming = True
+    beingspammed = user
 
     # print initial embed
     await message.channel.send(embed=embed)
@@ -47,7 +65,7 @@ async def cannon(message, user, frequency: typing.Optional[int] = 100):
 
     # unleashes the cannons
     for x in range(0, frequency):
-        if lastmessageauthor == user:
+        if keepspamming:
             await message.channel.send(user)
         else:
             await message.channel.send(embed=cancelembed)

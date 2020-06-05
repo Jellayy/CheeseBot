@@ -1,7 +1,7 @@
 import discord
 import bottoken
 import typing
-import time
+import asyncio
 from discord.ext import commands
 
 client = commands.Bot(command_prefix='.')
@@ -61,7 +61,7 @@ async def cannon(message, user, frequency: typing.Optional[int] = 100):
     await message.channel.send(embed=embed)
 
     # wait alotted time
-    time.sleep(10)
+    await asyncio.sleep(10)
 
     # unleashes the cannons
     for x in range(0, frequency):

@@ -11,6 +11,16 @@ client = commands.Bot(command_prefix='.')
 async def on_ready():
     print("bot is ready")
 
+# Log user joins to console
+@client.event
+async def on_member_join(member):
+    print(f"{member} has joined the server")
+
+# Log user remove to console
+@client.event
+async def on_member_remove(member):
+    print(f"{member} has been removed from the server")
+
 # Ping
 @client.command()
 async def ping(ctx):
@@ -18,23 +28,23 @@ async def ping(ctx):
 
 # Spam cannons
 
-# Handles stopping of the spam cannons
-beingspammed = ""
-keepspamming = True
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-    if message.author.bot:
-        return
-    lastmessageauthor = message.author.mention
-    lastmessageauthor = lastmessageauthor.replace('!', '')
-
-    if lastmessageauthor == beingspammed:
-        global keepspamming
-        keepspamming = False
-
-    await client.process_commands(message)
+# # Handles stopping of the spam cannons
+# beingspammed = ""
+# keepspamming = True
+# @client.event
+# async def on_message(message):
+#     if message.author == client.user:
+#         return
+#     if message.author.bot:
+#         return
+#     lastmessageauthor = message.author.mention
+#     lastmessageauthor = lastmessageauthor.replace('!', '')
+#
+#     if lastmessageauthor == beingspammed:
+#         global keepspamming
+#         keepspamming = False
+#
+#     await client.process_commands(message)
 
 @client.command()
 async def cannon(message, user, frequency: typing.Optional[int] = 100):

@@ -7,6 +7,7 @@ client = discord.Client()
 ########################################################################################################################
 # Set channel name to be used here
 log_channel = "log"
+log_guild = "Test Server"
 
 # Log user joins
 @client.event
@@ -41,11 +42,25 @@ async def on_member_unban(guild, user):
             await channel.send(f"{user.mention} has been unbanned from the server")
             print("[MEMBER UNBAN] " + str(user) + " has been unbanned from: " + guild.name + " (" + str(guild.id) + ")")
 
-# Log when user changes profile
+# Log when user changes nickname
 @client.event
 async def on_member_update(before, after):
-    for channel in before.guild.channels:
+    for channel in after.guild.channels:
         if str(channel) == log_channel:
+            if before.nick != after.nick:
+                await channel.send(f"{after.mention} has changed their alias from {before.nick} to {after.nick}")
+                print("[MEMBER UPDATE] " + str(after) + " has changed their alias in " + str(after.guild.name) + ": " + str(before.nick) + " -> " + str(after.nick))
+
+# Log when user updates username
+@client.event
+async def on_user_update(before, after):
+    for guild in client.guilds:
+        if str(guild) == log_guild:
+            for channel in guild.channels:
+                if str(channel) == log_channel:
+                    if str(before) != str(after):
+                        await channel.send(f"{after.mention} has changed their username from {str(before)} to {str(after)}")
+                        print("[MEMBER UPDATE] " + str(before) + " has changed their username to: " + str(after))
 
 
 ########################################################################################################################

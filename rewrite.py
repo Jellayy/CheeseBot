@@ -5,7 +5,7 @@ client = discord.Client()
 ########################################################################################################################
 # Log Channel
 ########################################################################################################################
-# Set channel name to be used here
+# Configuration
 log_channel = "log"
 log_guild = "Test Server"
 
@@ -62,14 +62,31 @@ async def on_user_update(before, after):
                         await channel.send(f"{after.mention} has changed their username from {str(before)} to {str(after)}")
                         print("[MEMBER UPDATE] " + str(before) + " has changed their username to: " + str(after))
 
+########################################################################################################################
+# Moderation
+########################################################################################################################
 
 ########################################################################################################################
-# Stats
+# Fun Stuff
 ########################################################################################################################
+# Configurations
+approved_vim_channel = "vim_is_love_vim_is_life"
 
+# Ban people for mentioning VIM outside of the VIM channel
+# VIM channel con be configured under approved_vim_channel
 @client.event
 async def on_message(message):
     if message.author != client.user:
-        print("[MESSAGE RECIEVED] " + str(message.author) + ": " + message.content)
+        if message.content.find("vim") != -1:
+            if str(message.channel) != approved_vim_channel:
+                print("[HERECY DETECTED] " + str(message.author) + " has been detected mentioning VIM outside of approved channels in: " + str(message.guild))
+                await message.channel.send("MENTION OF VIM OUTSIDE OF THE VIM CHANNEL IS HERECY AND PUNISHABLE BY DEATH")
+                try:
+                    await message.guild.ban(message.author, reason="HERECY OF VIM ORIGIN", delete_message_days=0)
+                except discord.errors.Forbidden:
+                    print("[INSUFFICIENT PERMISSIONS] CheeseBot does not have sufficient permissions to ban: " + str(message.author) + " in: " + str(message.guild))
+                    for channel in message.guild.channels:
+                        if str(channel) == log_channel:
+                            await channel.send(f"CheeseBot does not have sufficient permissions to ban {message.author}")
 
 client.run(bottoken.get_token())

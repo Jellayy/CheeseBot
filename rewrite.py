@@ -194,6 +194,77 @@ async def ban(ctx, member: discord.User = None, *, reason=None):
             if str(channel) == log_channel:
                 await channel.send(embed=embed)
 
+# Kick users
+@client.command()
+async def kick(ctx, member: discord.User = None, *, reason=None):
+    nopermissions = True
+    for role in ctx.author.roles:
+        if str(role) == mod_role:
+            nopermissions = False
+            if ctx.message.author == member:
+                embed = discord.Embed(
+                    color=discord.Color.red(),
+                    title="Error",
+                    description="**You can't kick yourself**"
+                )
+                embed.set_author(name=str(member), icon_url=member.avatar_url)
+                embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
+                await ctx.send(embed=embed)
+                break
+            if member is None:
+                embed = discord.Embed(
+                    color=discord.Color.red(),
+                    title="Error",
+                    description="**You must choose someone to kick**\n\nUsage: `.kick @USER REASON`"
+                )
+                embed.set_author(name=str(ctx.message.author), icon_url=ctx.message.author.avatar_url)
+                embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
+                await ctx.send(embed=embed)
+                break
+            try:
+                await ctx.guild.kick(member, reason=reason)
+                print("[KICKED MEMBER] " + str(ctx.message.author) + " has kicked: " + str(member) + " in: " + str(
+                    ctx.guild) + " using CheeseBot for reason: " + str(reason))
+                embed = discord.Embed(
+                    color=discord.Color.red(),
+                    title="Kicked Member",
+                    description=f"{ctx.message.author.mention} **has kicked** {member.mention} **for reason** {reason}"
+                )
+                embed.set_author(name=str(member), icon_url=member.avatar_url)
+                embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
+                await ctx.send(embed=embed)
+                for channel in ctx.guild.channels:
+                    if str(channel) == log_channel:
+                        await channel.send(embed=embed)
+            except discord.errors.Forbidden:
+                print("[INSUFFICENT PERMISSIONS] CheeseBot does not have sufficient permissions to kick: " + str(
+                    member) + " in: " + str(ctx.guild))
+                embed = discord.Embed(
+                    color=discord.Color.red(),
+                    title="Error",
+                    description=f"**CheeseBot does not have sufficient permissions to kick** {member.mention}"
+                )
+                embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
+                await ctx.send(embed=embed)
+                for channel in ctx.guild.channels:
+                    if str(channel) == log_channel:
+                        await channel.send(embed=embed)
+    if nopermissions:
+        print(
+            "[UNAUTHROIZED USE] " + str(ctx.message.author) + " tried to use CheeseBot moderation commands in: " + str(
+                ctx.guild) + " without proper permissions")
+        embed = discord.Embed(
+            color=discord.Color.red(),
+            title="Unauthroized Use",
+            description=f"{ctx.message.author.mention} **does not have sufficient permissions to use CheeseBot moderation commands**"
+        )
+        embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
+        embed.set_author(name=str(ctx.message.author), icon_url=ctx.message.author.avatar_url)
+        await ctx.send(embed=embed)
+        for channel in ctx.guild.channels:
+            if str(channel) == log_channel:
+                await channel.send(embed=embed)
+
 
 ########################################################################################################################
 # Fun Stuff

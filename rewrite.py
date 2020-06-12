@@ -10,6 +10,7 @@ client = commands.Bot(command_prefix=".")
 log_channel = "log"
 log_guild = "Test Server"
 
+
 # Log user joins
 @client.event
 async def on_member_join(member):
@@ -23,7 +24,9 @@ async def on_member_join(member):
             embed.set_author(name=str(member), icon_url=member.avatar_url)
             embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
             await channel.send(embed=embed)
-            print("[MEMBER JOIN] " + str(member) + " has joined: " + member.guild.name + " (" + str(member.guild.id) + ")")
+            print("[MEMBER JOIN] " + str(member) + " has joined: " + member.guild.name + " (" + str(
+                member.guild.id) + ")")
+
 
 # Log user leaving
 @client.event
@@ -38,7 +41,9 @@ async def on_member_remove(member):
             embed.set_author(name=str(member), icon_url=member.avatar_url)
             embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
             await channel.send(embed=embed)
-            print("[MEMBER LEAVE] " + str(member) + " has left: " + member.guild.name + " (" + str(member.guild.id) + ")")
+            print(
+                "[MEMBER LEAVE] " + str(member) + " has left: " + member.guild.name + " (" + str(member.guild.id) + ")")
+
 
 # Log user bans
 @client.event
@@ -54,7 +59,9 @@ async def on_member_ban(guild, user):
             embed.set_author(name=str(user), icon_url=user.avatar_url)
             embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
             await channel.send(embed=embed)
-            print("[MEMBER BAN] " + str(user) + " has been banned from: " + guild.name + " (" + str(guild.id) + ")" + " for reason: " + str(banreason.reason))
+            print("[MEMBER BAN] " + str(user) + " has been banned from: " + guild.name + " (" + str(
+                guild.id) + ")" + " for reason: " + str(banreason.reason))
+
 
 # Log user unbans
 @client.event
@@ -71,6 +78,7 @@ async def on_member_unban(guild, user):
             await channel.send(embed=embed)
             print("[MEMBER UNBAN] " + str(user) + " has been unbanned from: " + guild.name + " (" + str(guild.id) + ")")
 
+
 # Log when user changes nickname
 @client.event
 async def on_member_update(before, after):
@@ -85,7 +93,9 @@ async def on_member_update(before, after):
                 embed.set_author(name=str(before), icon_url=before.avatar_url)
                 embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
                 await channel.send(embed=embed)
-                print("[MEMBER UPDATE] " + str(after) + " has changed their alias in " + str(after.guild.name) + ": " + str(before.nick) + " -> " + str(after.nick))
+                print("[MEMBER UPDATE] " + str(after) + " has changed their alias in " + str(
+                    after.guild.name) + ": " + str(before.nick) + " -> " + str(after.nick))
+
 
 # Log when user updates username
 @client.event
@@ -105,11 +115,13 @@ async def on_user_update(before, after):
                         await channel.send(embed=embed)
                         print("[MEMBER UPDATE] " + str(before) + " has changed their username to: " + str(after))
 
+
 ########################################################################################################################
 # Moderation
 ########################################################################################################################
 # Role needed to use moderation commands
 mod_role = "FUCCN OG"
+
 
 # Ban users
 @client.command()
@@ -118,9 +130,30 @@ async def ban(ctx, member: discord.User = None, *, reason=None):
     for role in ctx.message.author.roles:
         if str(role) == mod_role:
             nopermissions = False
+            if ctx.message.author == member:
+                embed = discord.Embed(
+                    color=discord.Color.red(),
+                    title="Error",
+                    description="**You can't ban yourself**"
+                )
+                embed.set_author(name=str(member), icon_url=member.avatar_url)
+                embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
+                await ctx.send(embed=embed)
+                break
+            if member is None:
+                embed = discord.Embed(
+                    color=discord.Color.red(),
+                    title="Error",
+                    description="**You must choose someone to ban**\n\nUsage: `.ban @USER REASON`"
+                )
+                embed.set_author(name=str(ctx.message.author), icon_url=ctx.message.author.avatar_url)
+                embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
+                await ctx.send(embed=embed)
+                break
             try:
                 await ctx.guild.ban(member, reason=reason)
-                print("[BANNED MEMBER] " + str(ctx.message.author) + " has banned: " + str(member) + " in: " + str(ctx.guild) + " using CheeseBot for reason: " + str(reason))
+                print("[BANNED MEMBER] " + str(ctx.message.author) + " has banned: " + str(member) + " in: " + str(
+                    ctx.guild) + " using CheeseBot for reason: " + str(reason))
                 embed = discord.Embed(
                     color=discord.Color.red(),
                     title="Banned Member",
@@ -133,7 +166,8 @@ async def ban(ctx, member: discord.User = None, *, reason=None):
                     if str(channel) == log_channel:
                         await channel.send(embed=embed)
             except discord.errors.Forbidden:
-                print("[INSUFFICENT PERMISSIONS] CheeseBot does not have sufficient permissions to ban: " + str(member) + " in: " + str(ctx.guild))
+                print("[INSUFFICENT PERMISSIONS] CheeseBot does not have sufficient permissions to ban: " + str(
+                    member) + " in: " + str(ctx.guild))
                 embed = discord.Embed(
                     color=discord.Color.red(),
                     title="Error",
@@ -145,7 +179,9 @@ async def ban(ctx, member: discord.User = None, *, reason=None):
                     if str(channel) == log_channel:
                         await channel.send(embed=embed)
     if nopermissions:
-        print("[UNAUTHROIZED USE] " + str(ctx.message.author) + " tried to use CheeseBot moderation commands in: " + str(ctx.guild) + " without proper permissions")
+        print(
+            "[UNAUTHROIZED USE] " + str(ctx.message.author) + " tried to use CheeseBot moderation commands in: " + str(
+                ctx.guild) + " without proper permissions")
         embed = discord.Embed(
             color=discord.Color.red(),
             title="Unauthroized Use",
@@ -157,6 +193,7 @@ async def ban(ctx, member: discord.User = None, *, reason=None):
         for channel in ctx.guild.channels:
             if str(channel) == log_channel:
                 await channel.send(embed=embed)
+
 
 ########################################################################################################################
 # Fun Stuff

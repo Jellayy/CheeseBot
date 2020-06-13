@@ -1,6 +1,6 @@
 import discord
 
-async def user_join_embed(client, member):
+async def member_join(client, member):
     embed = discord.Embed(
         color=discord.Color.green(),
         title="Member Join",
@@ -11,7 +11,7 @@ async def user_join_embed(client, member):
 
     return embed
 
-async def user_leave_embed(client, member):
+async def member_remove(client, member):
     embed = discord.Embed(
         color=discord.Color.red(),
         title="Member Leave",
@@ -22,7 +22,7 @@ async def user_leave_embed(client, member):
 
     return embed
 
-async def user_banned_embed(client, user, banreason):
+async def member_banned(client, user, banreason):
     embed = discord.Embed(
         color=discord.Color.red(),
         title="Member Banned",
@@ -33,7 +33,7 @@ async def user_banned_embed(client, user, banreason):
 
     return embed
 
-async def user_unbanned_embed(client, user):
+async def member_unbanned(client, user):
     embed = discord.Embed(
         color=discord.Color.green(),
         title="Member Unbanned",
@@ -44,7 +44,7 @@ async def user_unbanned_embed(client, user):
 
     return embed
 
-async def user_aliaschange_embed(client, before, after):
+async def member_alias_change(client, before, after):
     embed = discord.Embed(
         color=discord.Color.blue(),
         title="Member Update",
@@ -55,7 +55,7 @@ async def user_aliaschange_embed(client, before, after):
 
     return embed
 
-async def user_userupdate_embed(client, before, after):
+async def member_username_change(client, before, after):
     embed = discord.Embed(
         color=discord.Color.blue(),
         title="Member Update",
@@ -66,7 +66,7 @@ async def user_userupdate_embed(client, before, after):
 
     return embed
 
-async def ban_user_embed(client, ctx, member, reason):
+async def member_banned_command(client, ctx, member, reason):
     embed = discord.Embed(
         color=discord.Color.red(),
         title="Banned Member",
@@ -77,7 +77,7 @@ async def ban_user_embed(client, ctx, member, reason):
 
     return embed
 
-async def kick_user_embed(client, ctx, member, reason):
+async def member_kicked_command(client, ctx, member, reason):
     embed = discord.Embed(
         color=discord.Color.red(),
         title="Kicked Member",
@@ -88,7 +88,7 @@ async def kick_user_embed(client, ctx, member, reason):
 
     return embed
 
-async def error_target_self_embed(client, member, action):
+async def error_target_self(client, member, action):
     embed = discord.Embed(
         color=discord.Color.red(),
         title="Error",
@@ -99,7 +99,7 @@ async def error_target_self_embed(client, member, action):
 
     return embed
 
-async def error_target_none_embed(client, ctx, action, usage):
+async def error_target_none(client, ctx, action, usage):
     embed = discord.Embed(
         color=discord.Color.red(),
         title="Error",
@@ -110,7 +110,7 @@ async def error_target_none_embed(client, ctx, action, usage):
 
     return embed
 
-async def error_insufficient_permissions_embed(client, member, action):
+async def error_insufficient_permissions(client, member, action):
     embed = discord.Embed(
         color=discord.Color.red(),
         title="Error",
@@ -120,7 +120,7 @@ async def error_insufficient_permissions_embed(client, member, action):
 
     return embed
 
-async def error_unauthorized_use_embed(client, ctx):
+async def error_unauthorized_use(client, ctx):
     embed = discord.Embed(
         color=discord.Color.red(),
         title="Unauthroized Use",

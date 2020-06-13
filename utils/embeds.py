@@ -88,6 +88,39 @@ async def member_kicked_command(client, ctx, member, reason):
 
     return embed
 
+async def vote_kick(client, ctx, member, reason):
+    embed = discord.Embed(
+        color=discord.Color.red(),
+        title="Vote Kick",
+        description=f"{ctx.message.author.mention} **has started a vote to kick** {member.mention} **for reason** {reason}**. React below to vote! Polling will end in one minute!**"
+    )
+    embed.set_author(name=str(member), icon_url=member.avatar_url)
+    embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
+
+    return embed
+
+async def vote_kick_win(client, member, reason):
+    embed = discord.Embed(
+        color=discord.Color.red(),
+        title="Vote Decision: **KICK**",
+        description=f"**The people have spoken!** {member.mention} **shall be kicked for** {reason}!"
+    )
+    embed.set_author(name=str(member), icon_url=member.avatar_url)
+    embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
+
+    return embed
+
+async def vote_kick_lose(client, member):
+    embed = discord.Embed(
+        color=discord.Color.green(),
+        title="Vote Decision: **STAY**",
+        description=f"**The people have spoken!** {member.mention} **is not guilty!**"
+    )
+    embed.set_author(name=str(member), icon_url=member.avatar_url)
+    embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
+
+    return embed
+
 async def error_target_self(client, member, action):
     embed = discord.Embed(
         color=discord.Color.red(),

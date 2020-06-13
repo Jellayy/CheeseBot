@@ -1,4 +1,4 @@
-import discord, bottoken
+import discord, bottoken, asyncio
 from discord.ext import commands
 import utils.embeds as embeds
 
@@ -160,5 +160,44 @@ async def kick(ctx, member: discord.User = None, *, reason=None):
                 await channel.send(embed=embed)
         print("[UNAUTHROIZED USE] " + str(ctx.message.author) + " tried to use CheeseBot moderation commands in: " + str(ctx.guild) + " without proper permissions")
 
+# Vote Kick Users
+@client.command()
+async def votekick(ctx, member: discord.User = None, *, reason=None):
+    if ctx.message.author == member:
+        embed = await embeds.error_target_self(client, member, "vote kick")
+        await ctx.send(embed=embed)
+        return
+    if member is None:
+        embed = await embeds.error_target_none(client, ctx, "vote kick", ".votekick @USER REASON")
+        await ctx.send(embed=embed)
+        return
+    try:
+        embed = await embeds.vote_kick(client, ctx, member, reason)
+        options = ['✅', '❌']
+        votemessage = await ctx.send(embed=embed)
+        for option in options:
+            await votemessage.add_reaction(emoji=option)
+        await asyncio.sleep(60)
+        votemessage = await ctx.fetch_message(votemessage.id)
+        counts = {react.emoji: react.count for react in votemessage.reactions}
+        winner = max(options, key=counts.get)
+        if winner == '✅':
+            embed = await embeds.vote_kick_win(client, member, reason)
+            await ctx.send(embed=embed)
+            for channel in ctx.guild.channels:
+                if str(channel) == log_channel:
+                    await channel.send(embed=embed)
+            await ctx.guild.kick(member, reason=reason)
+            print("[VOTE KICKED MEMBER] " + str(ctx.message.author) + " has vote kicked: " + str(member) + " in: " + str(ctx.guild) + " using CheeseBot for reason: " + str(reason))
+        else:
+            embed = await embeds.vote_kick_lose(client, member)
+            await ctx.send(embed=embed)
+    except discord.errors.Forbidden:
+        embed = await embeds.error_insufficient_permissions(client, member, "votekick")
+        await ctx.send(embed=embed)
+        for channel in ctx.guild.channels:
+            if str(channel) == log_channel:
+                await channel.send(embed=embed)
+        print("[INSUFFICENT PERMISSIONS] CheeseBot does not have sufficient permissions to votekick: " + str(member) + " in: " + str(ctx.guild))
 
 client.run(bottoken.get_token())

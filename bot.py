@@ -173,7 +173,7 @@ async def votekick(ctx, member: discord.User = None, *, reason=None):
         return
     try:
         embed = await embeds.vote_kick(client, ctx, member, reason)
-        options = ['✅', '❌']
+        options = ['❌', '✅']
         votemessage = await ctx.send(embed=embed)
         for option in options:
             await votemessage.add_reaction(emoji=option)

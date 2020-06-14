@@ -11,7 +11,6 @@ client = commands.Bot(command_prefix=".")
 log_channel = "log"
 log_guild = "Test Server"
 
-
 # Log user joins
 @client.event
 async def on_member_join(member):
@@ -76,13 +75,31 @@ async def on_user_update(before, after):
                         await channel.send(embed=embed)
                         print("[MEMBER UPDATE] " + str(before) + " has changed their username to: " + str(after))
 
+# Log message deletions
+@client.event
+async def on_message_delete(message):
+    for channel in message.guild.channels:
+        if str(channel) == log_channel:
+            embed = await embeds.message_deleted(client, message)
+            await channel.send(embed=embed)
+            print("[MESSAGE DELETED] in: " + str(message.guild) + " Author: " + str(message.author) + " | Message: " + str(message.content))
+
+
+# Log message edits
+@client.event
+async def on_message_edit(before, after):
+    if str(before.content) != str(after.content):
+        for channel in after.guild.channels:
+            if str(channel) == log_channel:
+                embed = await embeds.message_edited(client, before, after)
+                await channel.send(embed=embed)
+                print("[MESSAGE EDITED] in: " + str(after.guild) + " by: " + str(after.author) + " | Before: " + str(before.content) + " After: " + str(after.content))
 
 ########################################################################################################################
 # Moderation
 ########################################################################################################################
 # Role needed to use moderation commands
 mod_role = "FUCCN OG"
-
 
 # Ban users
 @client.command()
@@ -199,5 +216,9 @@ async def votekick(ctx, member: discord.User = None, *, reason=None):
             if str(channel) == log_channel:
                 await channel.send(embed=embed)
         print("[INSUFFICENT PERMISSIONS] CheeseBot does not have sufficient permissions to votekick: " + str(member) + " in: " + str(ctx.guild))
+
+########################################################################################################################
+# Fun Stuff
+########################################################################################################################
 
 client.run(bottoken.get_token())

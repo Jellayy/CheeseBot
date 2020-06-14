@@ -88,6 +88,27 @@ async def member_kicked_command(client, ctx, member, reason):
 
     return embed
 
+async def message_deleted(client, message):
+    embed = discord.Embed(
+        color=discord.Color.red(),
+        title="Message Deleted",
+        description=f"**Author: **{message.author.mention}\n**Message: **{message.content}"
+    )
+    embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
+
+    return embed
+
+async def message_edited(client, before, after):
+    embed = discord.Embed(
+        color=discord.Color.red(),
+        title="Message Edited",
+        description=f"**Before: **{before.content}\n**After: **{after.content}"
+    )
+    embed.set_author(name=str(after.author), icon_url=after.author.avatar_url)
+    embed.set_footer(text="CheeseBot", icon_url=client.user.avatar_url)
+
+    return embed
+
 async def vote_kick(client, ctx, member, reason):
     embed = discord.Embed(
         color=discord.Color.red(),

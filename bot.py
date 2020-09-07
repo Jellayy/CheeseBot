@@ -1,5 +1,8 @@
-import discord, bottoken, asyncio
+import asyncio
+import bottoken
+import discord
 from discord.ext import commands
+
 import utils.embeds as embeds
 
 client = commands.Bot(command_prefix=".")
@@ -99,7 +102,7 @@ async def on_message_edit(before, after):
 # Moderation
 ########################################################################################################################
 # Role needed to use moderation commands
-mod_role = "FUCCN OG"
+mod_role = "HackingApChem"
 
 # Ban users
 @client.command()

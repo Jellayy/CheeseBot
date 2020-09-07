@@ -23,7 +23,7 @@ async def on_member_join(member):
             await channel.send(embed=embed)
             print("[MEMBER JOIN] " + str(member) + " has joined: " + member.guild.name + " (" + str(member.guild.id) + ")")
 
-# test
+# more testing
 # Log user leaving
 @client.event
 async def on_member_remove(member):
